@@ -15,7 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -41,15 +43,22 @@ public class WebSecurityConfig {
         http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(URL + "/").permitAll()
-                        .requestMatchers(HttpMethod.POST, "user").permitAll()
-                        .requestMatchers(HttpMethod.POST, "user/login").permitAll()
-                        .requestMatchers(URL + "api/user").hasAnyRole("USER", "ADM")
-                        .requestMatchers(URL + "/adm").hasAnyRole("ADM")
+                        .requestMatchers("/api").permitAll()
+
+
+                        .requestMatchers(HttpMethod.POST, "/user").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
+
+                        .requestMatchers("/api/user").hasAnyRole("USER", "ADM") // USER e ADM
+                        .requestMatchers("/api/adm").hasRole("ADM")         // Apenas ADM
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

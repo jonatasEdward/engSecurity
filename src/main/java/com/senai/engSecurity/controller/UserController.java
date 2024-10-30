@@ -3,6 +3,9 @@ package com.senai.engSecurity.controller;
 import com.senai.engSecurity.model.User;
 import com.senai.engSecurity.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,7 +22,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public User login(@RequestBody User user) {
-        return userService.findByUsernameAndPassword(user);
+    public ResponseEntity<User> login(@RequestBody User user) {
+        try {
+            User authenticatedUser = userService.findByUsernameAndPassword(user.getUsername(), user.getPassword());
+            return ResponseEntity.ok(authenticatedUser);
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
     }
 }

@@ -29,15 +29,16 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(URL + "/public").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/user").permitAll()
-                        .requestMatchers(URL + "/user").hasRole("USER")
-                        .requestMatchers(URL + "/admin").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .httpBasic();
+                        .requestMatchers(URL + "/").permitAll()
+                        .requestMatchers(HttpMethod.POST, "user").permitAll()
+                        .requestMatchers(HttpMethod.POST, "user/login").permitAll()
+                        .requestMatchers(URL + "api/user").hasAnyRole("USER", "ADM")
+                        .requestMatchers(URL + "/adm").hasAnyRole("ADM")
+                        .anyRequest().authenticated())
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

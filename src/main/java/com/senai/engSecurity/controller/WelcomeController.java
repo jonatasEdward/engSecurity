@@ -22,4 +22,8 @@ public class WelcomeController {
         return "Authorize ADM";
     }
 
+    @GetMapping("/public")
+    public String publicEndpoint() {
+        return "Publicly accessible endpoint";
+    }
 }

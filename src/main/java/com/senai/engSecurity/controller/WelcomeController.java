@@ -8,19 +8,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class WelcomeController {
 
-    @GetMapping
-    public String welcome() {
-        return "Hello World";
+    @GetMapping("/public")
+    public String publicEndpoint() {
+        return "Este é um endpoint público.";
     }
 
     @GetMapping("/user")
-    public String user() {
-        return "Authorize USER";
+    public String userEndpoint() {
+        return "Este é um endpoint restrito para usuários autenticados.";
     }
 
-    @GetMapping("/adm")
-    public String adm() {
-        return "Authorize ADM";
+    @GetMapping("/admin")
+    public String adminEndpoint() {
+        return "Este é um endpoint restrito para administradores.";
     }
-
 }
